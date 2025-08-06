@@ -5,37 +5,42 @@
 #include "simple_system_common.h"
 
 int main(int argc, char **argv) {
-  pcount_enable(0);
-  pcount_reset();
-  pcount_enable(1);
+	int a = 12;
+    int b = 34;
+    int result;
 
-  puts("Hello simple system\n");
-  puthex(0xDEADBEEF);
-  putchar('\n');
-  puthex(0xBAADF00D);
-  putchar('\n');
+    asm volatile (
+        ".insn r 0x0B, 0x0, 0x00, %0, %1, %2"
+        : "=r"(result)        // output
+        : "r"(a), "r"(b)      // inputs
+    );
 
-  pcount_enable(0);
+    char buf[32];
 
-  // Enable periodic timer interrupt
-  // (the actual timebase is a bit meaningless in simulation)
-  timer_enable(2000);
-
-  uint64_t last_elapsed_time = get_elapsed_time();
-
-  while (last_elapsed_time <= 4) {
-    uint64_t cur_time = get_elapsed_time();
-    if (cur_time != last_elapsed_time) {
-      last_elapsed_time = cur_time;
-
-      if (last_elapsed_time & 1) {
-        puts("Tick!\n");
-      } else {
-        puts("Tock!\n");
-      }
+    int temp = result;
+    int idx = 0;
+    if (temp == 0) {
+        buf[idx++] = '0';
+    } else {
+        if (temp < 0) {
+            putchar('-');
+            temp = -temp;
+        }
+        char rev[16];
+        int ridx = 0;
+        while (temp > 0) {
+            rev[ridx++] = '0' + (temp % 10);
+            temp /= 10;
+        }
+        while (ridx > 0) {
+            buf[idx++] = rev[--ridx];
+        }
     }
-    asm volatile("wfi");
-  }
+    buf[idx] = '\0';
+
+    puts("ALU_ADD32 result:\n");
+    puts(buf);
+    putchar('\n');
 
   return 0;
 }

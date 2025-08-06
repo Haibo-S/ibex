@@ -51,6 +51,14 @@ module ibex_alu #(
   logic        adder_op_b_negate;
   logic [32:0] adder_in_a, adder_in_b;
   logic [31:0] adder_result;
+  logic [31:0] alu_add32;
+
+ibex_adder32 i_add32 (  
+  .a_i  (operand_a_i),
+  .b_i  (operand_b_i),
+  .sum_o(alu_add32)
+);
+
 
   always_comb begin
     adder_op_a_shift1 = 1'b0;
@@ -1331,6 +1339,9 @@ module ibex_alu #(
       ALU_SH1ADD, ALU_SH2ADD,
       ALU_SH3ADD: result_o = adder_result;
 
+	  // added adder32
+	  ALU_ADD32: result_o = alu_add32;
+	
       // Shift Operations
       ALU_SLL,  ALU_SRL,
       ALU_SRA,

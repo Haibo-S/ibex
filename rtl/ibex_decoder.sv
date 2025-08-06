@@ -448,6 +448,13 @@ module ibex_decoder #(
         endcase
       end
 
+	  OPCODE_CUST: begin
+		rf_ren_a_o = 1'b1;
+		rf_ren_b_o = 1'b1;
+		rf_we = 1'b1;
+		illegal_insn = 1'b0;
+      end
+
       OPCODE_OP: begin  // Register-Register ALU operation
         rf_ren_a_o      = 1'b1;
         rf_ren_b_o      = 1'b1;
@@ -943,6 +950,12 @@ module ibex_decoder #(
 
           default: ;
         endcase
+      end
+
+	  OPCODE_CUST: begin
+        alu_op_a_mux_sel_o = OP_A_REG_A;
+        alu_op_b_mux_sel_o = OP_B_REG_B;
+        alu_operator_o     = ALU_ADD32;
       end
 
       OPCODE_OP: begin  // Register-Register ALU operation

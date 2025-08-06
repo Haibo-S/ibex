@@ -67,7 +67,8 @@ package ibex_pkg;
     OPCODE_BRANCH   = 7'h63,
     OPCODE_JALR     = 7'h67,
     OPCODE_JAL      = 7'h6f,
-    OPCODE_SYSTEM   = 7'h73
+    OPCODE_SYSTEM   = 7'h73,
+	OPCODE_CUST     = 7'h0B
   } opcode_e;
 
 
@@ -79,6 +80,7 @@ package ibex_pkg;
     // Arithmetics
     ALU_ADD,
     ALU_SUB,
+	ALU_ADD32,
 
     // Logics
     ALU_XOR,
